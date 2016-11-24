@@ -45,9 +45,49 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
+app.get("/login", (req, res) => {
+  //get login interface
+  res.redirect("/");
+});
+
+app.get("/register", (req, res) => {
+  //get register interface
+});
+
+app.get("/user/:userid", (req, res) => {
+  //get user interface (user scores, ranks, archive of past games)
+});
+
+app.post("/login", (req, res) => {
+  //user login
+});
+
+app.post("/logout", (req, res) => {
+  // req.session = null;
+  // res.redirect("/");
+});
+
+app.post("/register", (req, res) => {
+  // user registration
+});
+
+app.get("/games", (req, res) => {
+  //get list of active games for the user
+});
+
+app.get("/game/:gameid", (req, res) => {
+  //go into the game
+});
+
+app.post("/games", (req, res) => {
+  //makes a new game by hosting a new room or joining an existing room awaiting a guest
+});
+
 app.listen(PORT, () => {
   console.log("Example app listening on port " + PORT);
 });
+
+
 
 function generateRandomString() {
   return (100000*Math.random()).toString(36).replace(/[^a-z0-9]+/g, '').substr(0, 6);
