@@ -16,6 +16,7 @@ const knexLogger  = require('knex-logger');
 
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
+const gamesRoutes = require("./routes/games");
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
@@ -37,47 +38,11 @@ app.use(express.static("public"));
 
 // Mount all resource routes
 app.use("/api/users", usersRoutes(knex));
+app.use("/api/games", gamesRoutes(knex));
 
 // Home page
 app.get("/", (req, res) => {
   res.render("index");
-});
-
-app.get("/games", (req, res) => {
-  //get list of active games for the user
-})
-
-app.get("/game/:gameid", (req, res) => {
-  //go into the game
-}
-
-app.get("/login", (req, res) => {
-  //get login interface
-}
-
-app.get("/register", (req, res) => {
-  //get register interface
-}
-
-app.get("/user/:userid", (req, res) => {
-  //get user interface (user scores, ranks, archive of past games)
-}
-
-app.post("/login", (req, res) => {
-  //user login
-});
-
-app.post("/logout", (req, res) => {
-  // req.session = null;
-  // res.redirect("/");
-});
-
-app.post("/register", (req, res) => {
-  // user registration
-});
-
-app.post("/games", (req, res) => {
-  //makes a new game by hosting a new room or joining an existing room awaiting a guest
 });
 
 app.listen(PORT, () => {
