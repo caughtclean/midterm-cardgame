@@ -16,9 +16,9 @@ function createGameElement(game) {
    //create variabled for gameer data,
    //used to append to html elements
    var name = game.type;
-   var host = game.host_id;
-   var guest = game.guest_id;
    var turn = game.whose_turn;
+   var host = game.host_name;
+   var guest = game.guest_name;
 
    var avatar = "/images/suits.png";
 
@@ -30,12 +30,17 @@ function createGameElement(game) {
    var $footer = $("<footer>");
    //to be appended to $header
    var $avatar = $("<img>").attr("src", avatar);  //.addClass("img").append(gameData.user.avatars);
-   var $name = $("<text>").append(name+" "+host+" "+"vs "+guest);
+   var $name = $("<text>").append(name);
+   var $player = $("<text>").append(host +" vs "+guest);
+   var $turn = $("<p>").append("It is ", turn, "\'s turn");
    //to be appended to $footer
    //footer children appended to footer
    //header children appended to
    ($avatar).appendTo($header);
    ($name).appendTo($header);
+   ($player).appendTo($header);
+   ($turn).appendTo($header);
+
    //append header to game article
    ($header).appendTo($game);
    ($body).appendTo($game);
