@@ -5,16 +5,15 @@ const router  = express.Router();
 
 module.exports = (knex) => {
 
-  //this will probably get removed
   router.get("/", (req, res) => {
     knex
       .select("*")
-      .from("users")
+      .from("games")
       .then((results) => {
         res.json(results);
     });
   });
 
-
   return router;
 }
+
