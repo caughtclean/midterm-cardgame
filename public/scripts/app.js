@@ -18,7 +18,7 @@ function createGameElement(game) {
    var name = game.type;
    var host = game.host_id;
    var guest = game.guest_id;
-   var turn = game.whos_turn
+   var turn = game.whose_turn;
 
    var avatar = "/images/suits.png";
 
