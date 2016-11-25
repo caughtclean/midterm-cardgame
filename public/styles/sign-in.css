@@ -1,4 +1,4 @@
-.new-tweet {
+.sign-in {
     border: 1px solid black;
     border-radius: 10px;
     background-color: #eee;
@@ -10,26 +10,26 @@
     display: none;
 }
 
-.new-tweet h2 {
+.sign-in h2 {
     color: black;
     border-bottom: 2px solid black;
     margin-left: 6px;
     margin-right: 6px;
 }
 
-.new-tweet textarea {
+.sign-in textarea {
     display: inherit;
     width: 390px;
     margin: auto;
     margin-bottom: 5px;
 }
 
-.new-tweet .counter {
+.sign-in .counter {
   float: right;
   font-style: italic;
 }
 
-.new-tweet input {
+.sign-in input {
   margin-left:2px;
   margin-bottom: 5px;
 }

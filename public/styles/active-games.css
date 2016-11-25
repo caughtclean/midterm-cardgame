@@ -1,9 +1,9 @@
-#tweet-container {
-  width: 410px;
+#games-container {
+
 }
 
 
-article.tweet {
+article.game {
   background-color: #fff;
   border: 1px solid gray;
   border-radius: 10px;
@@ -13,50 +13,50 @@ article.tweet {
   opacity: .5;
 }
 
-article.tweet:hover {
+article.game:hover {
   border: 1px solid black;
   opacity: 1.0
 }
 
-article.tweet header {
+article.game header {
   background-color: #eee;
   border-radius: 10px 10px 0px 0px;
   padding: 10px;
 }
 
-article.tweet:hover header {
+article.game:hover header {
   background-color: #e8fdff;
   border-radius: 10px 10px 0px 0px;
   padding: 10px;
 }
 
-article.tweet header img {
+article.game header img {
   border-radius: 10px;
   height: 80px;
   width: 80px;
 }
 
-article.tweet header img:hover {
+article.game header img:hover {
   border-radius: 10px;
   height: 100px;
   width: 100px;
 }
 
-article.tweet header text {
+article.game header text {
     color: #757575;
     vertical-align: top;
     padding-left: 10px;
     font-size: 150%;
 }
 
-article.tweet:hover header text {
+article.game:hover header text {
     color: #00a087;
     vertical-align: top;
     padding-left: 10px;
     font-size: 150%;
 }
 
-article.tweet span {
+article.game span {
   color: grey;
   vertical-align: top;
   float: right;
@@ -64,46 +64,46 @@ article.tweet span {
 }
 
 
-article.tweet > p {
+article.game > p {
   border-bottom: 1px solid grey;
   border-top: 1px solid grey;
   margin: 0px;
   padding: 15px;
 }
 
-article.tweet > p:hover {
+article.game > p:hover {
   border-bottom: 1px solid black;
   border-top: 1px solid black;
 }
 
-article.tweet footer p {
+article.game footer p {
   display: inline-block;
   margin: 0px;
 }
 
-article.tweet footer {
+article.game footer {
   padding: 10px;
   color:  #757575;
 }
 
 
-article.tweet footer i {
+article.game footer i {
   float: right;
   padding: 5px;
   color: white;
 }
 
-article.tweet:hover i {
+article.game:hover i {
   color: #00a087;
 }
 
-article.tweet footer i.fa-flag:hover {
+article.game footer i.fa-flag:hover {
   color: gold;
 }
-article.tweet footer i.fa-retweet:hover {
+article.game footer i.fa-regame:hover {
   color: green;
 }
-article.tweet footer i.fa-heart:hover {
+article.game footer i.fa-heart:hover {
   color: red;
 }
 
