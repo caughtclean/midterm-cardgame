@@ -9,6 +9,8 @@ module.exports = (knex) => {
     knex
       .select("*")
       .from("games")
+      .where("host_id", 1)
+      .orWhere("guest_id", 1)
       .then((results) => {
         res.json(results);
     });

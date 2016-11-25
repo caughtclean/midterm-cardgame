@@ -50,7 +50,7 @@ app.get("/table", (req, res) => {
 
 app.get("/login", (req, res) => {
   //get login interface
-  res.redirect("/");
+  res.render("login");
 });
 
 app.get("/register", (req, res) => {
@@ -64,9 +64,15 @@ app.get("/user/:userid", (req, res) => {
 app.post("/login", (req, res) => {
   //user login
   knex.select("name","password").from("users").where({ name: req.body.name, password: req.body.password }).then((results) => {
-  results.forEach((result) => {
-    console.log(result.name, result.password);
-  });
+    const user = results[0];
+    if(user){
+      //create session e
+      return res.redirect("/");
+    } else {
+      console.log("invalid username or password");
+      res.status(403);
+      return res.render("login");
+    }
 })
 });
 
@@ -89,6 +95,19 @@ app.get("/game/:gameid", (req, res) => {
 
 app.post("/games", (req, res) => {
   //makes a new game by hosting a new room or joining an existing room awaiting a guest
+});
+
+app.post("/", (req, res) => {
+knex.select("id").from("games").where({guest_id: null}).limit(1).then((game) => {
+  if(game) {
+    knex("games").where("id", game).update({guest_id: 1});
+  } else {
+    let newGame = {type: "Goofspiel", host_id: 1, whos_turn: 1, host_score: 0, guest_score: 0, turn_number: 0};
+    knex.insert(newGame).into("games");
+
+  }
+})
+
 });
 
 app.listen(PORT, () => {

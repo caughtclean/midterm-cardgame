@@ -27,22 +27,25 @@
     <nav id="nav-bar">
       <img class="logo" src="/images/suits.png">
       <span class="header">Goofspiel</span>
-      <text class="compose">New Game <i class="fa fa-sign-in" aria-hidden="true"></i></text>
+      <text class="compose">sign in <i class="fa fa-sign-in" aria-hidden="true"></i></text>
     </nav>
 
     <!-- Page-specific (main) content here -->
     <main class="container">
     <section class="sign-in">
-      <h2><i class="fa fa-user" aria-hidden="true"></i> Start a new game </h2>
-      <form action="/" method="POST">
-        <label for="user"></label>
+      <h2><i class="fa fa-user" aria-hidden="true"></i> Sign in </h2>
+      <form action="/login" method="POST">
+        <label for="email"></label>
         <br>
-        <input type="submit" value="Start"></input>
+        <input id="text" type="text" name="name" placeholder="username" style="width: 300px"></input>
+        <br>
+        <br>
+        <input id="password" type="password" name="password" placeholder="enter password" style="width: 300px"></input>
+        <br>
+        <br>
+        <input type="submit" value="Submit"></input>
         <br>
       </form>
-    </section>
-
-    <section id="games-container">
     </section>
     </main>
 
@@ -51,7 +54,7 @@
 
     <!-- App JS -->
     <script type="text/javascript" src="/scripts/app.js"></script>
-    <script type="text/javascript" src="/scripts/new_game.js"></script>
+    <script type="text/javascript" src="/scripts/sign_in.js"></script>
     <!-- <script type="text/javascript" src="/scripts/tweet-article-hover.js"></script> -->
   </body>
 </html>
