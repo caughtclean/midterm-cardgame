@@ -1,3 +1,4 @@
+
 $(() => {
   $.ajax({
     method: "GET",
@@ -42,3 +43,4 @@ function createGameElement(game) {
 
    return $game;
  };
+

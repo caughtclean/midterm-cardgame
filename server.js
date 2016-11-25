@@ -40,9 +40,12 @@ app.use(express.static("public"));
 // app.use("/api/users", usersRoutes(knex));
 app.use("/api/games", gamesRoutes(knex));
 
-// Home page
 app.get("/", (req, res) => {
   res.render("index");
+});
+
+app.get("/table", (req, res) => {
+  res.render("table");
 });
 
 app.get("/login", (req, res) => {
