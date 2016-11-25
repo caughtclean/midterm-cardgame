@@ -1,7 +1,7 @@
 #nav-bar {
   background-color: grey;
-  padding-left: 2em;
-  padding-right: 2em;
+  padding-left: 20px;
+  padding-right: 20px;
   padding-top: 10px;
   height: 100px;
   position: fixed;
@@ -9,6 +9,7 @@
   right:0;
   top: 0;
   z-index: 10;
+  margin-bottom: 120px;
 }
 
 #nav-bar .header {
@@ -30,19 +31,7 @@
 }
 
 #nav-bar text.compose {
-  float:right;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  background-color: #fff;
-  color: black;
-  width: 100px;
-  border: 1px solid black;
-  line-height: 50px;
-}
-
-#nav-bar text.compose {
-  float:right;
+  float: right;
   margin-top: 10px;
   margin-bottom: 10px;
   border-radius: 5px;

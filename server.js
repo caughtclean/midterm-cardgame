@@ -60,6 +60,11 @@ app.get("/user/:userid", (req, res) => {
 
 app.post("/login", (req, res) => {
   //user login
+  knex.select("name","password").from("users").where({ name: req.body.name, password: req.body.password }).then((results) => {
+  results.forEach((result) => {
+    console.log(result.name, result.password);
+  });
+})
 });
 
 app.post("/logout", (req, res) => {
