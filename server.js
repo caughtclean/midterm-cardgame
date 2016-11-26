@@ -8,6 +8,7 @@ const express     = require("express");
 const bodyParser  = require("body-parser");
 const sass        = require("node-sass-middleware");
 const app         = express();
+const session     = require('express-session');
 
 const knexConfig  = require("./knexfile");
 const knex        = require("knex")(knexConfig[ENV]);
@@ -35,6 +36,10 @@ app.use("/styles", sass({
   outputStyle: 'expanded'
 }));
 app.use(express.static("public"));
+app.use(cookieSession({
+  name: 'session',
+  keys: ['secret'],
+}))
 
 // Mount all resource routes
 // app.use("/api/users", usersRoutes(knex));
@@ -63,6 +68,7 @@ app.get("/user/:userid", (req, res) => {
 
 app.post("/login", (req, res) => {
   //user login
+  let name = req.body.name;
   knex.select("name","password").from("users").where({ name: req.body.name, password: req.body.password }).then((results) => {
     const user = results[0];
     if(user){
@@ -101,18 +107,20 @@ app.post("/", (req, res) => {
   console.log("posting to root");
   var user = 1;
   knex.select("id").from("games").where({guest_id: null}).limit(1).then((game) => {
-    if (game) {
-      console.log(typeof(game))
-      console.log("found half-filled game", game);
-      knex("games").where("id", game).update({guest_id: user}).then();
+    if(game.length > 0) {
+      console.log(game[0])
+      // console.log("found open game", game);
+      return knex("games").where("id", game[0].id).update({guest_id: user})
     } else {
-      console.log("no half-filled game; making new game");
-      let newGame = {type: "Goofspiel", host_id: user, guest_id: null, whos_turn: user, host_score: 0, guest_score: 0, turn_number: 0};
-      knex.insert(newGame).into("games").then();
-
-      res.redirect("/")
+      console.log("no open games; making new game");
+      let newGame = {type: "Goofspiel", status: "active", host_id: user, guest_id: null, whose_turn: user, host_score: 0, guest_score: 0, state: {board:{prize:[],host_card:"",guest_card:""},hands:{prize:[],host_hand:[],guest_hand:[]}}};
+      return knex.insert(newGame).into("games");
     }
-  })
+  }).then(() => {
+    res.redirect("/")
+  }).catch((error) => {
+
+  });
 
 });
 
