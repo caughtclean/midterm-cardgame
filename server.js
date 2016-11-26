@@ -98,15 +98,21 @@ app.post("/games", (req, res) => {
 });
 
 app.post("/", (req, res) => {
-knex.select("id").from("games").where({guest_id: null}).limit(1).then((game) => {
-  if(game) {
-    knex("games").where("id", game).update({guest_id: 1});
-  } else {
-    let newGame = {type: "Goofspiel", host_id: 1, whos_turn: 1, host_score: 0, guest_score: 0, turn_number: 0};
-    knex.insert(newGame).into("games");
+  console.log("posting to root");
+  var user = 1;
+  knex.select("id").from("games").where({guest_id: null}).limit(1).then((game) => {
+    if (game) {
+      console.log(typeof(game))
+      console.log("found half-filled game", game);
+      knex("games").where("id", game).update({guest_id: user}).then();
+    } else {
+      console.log("no half-filled game; making new game");
+      let newGame = {type: "Goofspiel", host_id: user, guest_id: null, whos_turn: user, host_score: 0, guest_score: 0, turn_number: 0};
+      knex.insert(newGame).into("games").then();
 
-  }
-})
+      res.redirect("/")
+    }
+  })
 
 });
 
