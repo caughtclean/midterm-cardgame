@@ -33,7 +33,7 @@ function createGameElement(game) {
 
    if (userID === hostID){
     playingAgainst = guestName;
-   } else if (userID === hostID){
+   } else if (userID === guestID){
     playingAgainst = hostName;
    } else {
     playingAgainst = "nobody";
