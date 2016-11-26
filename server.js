@@ -43,7 +43,6 @@ app.use(cookieSession({
 }))
 
 // Mount all resource routes
-// app.use("/api/users", usersRoutes(knex));
 app.use("/api/games", gamesRoutes(knex));
 
 app.get("/", (req, res) => {
