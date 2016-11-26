@@ -1,7 +1,29 @@
 body {
-  background-color: #EEE;
+  background-image: url("/images/poker-table-background.jpg");
 
-  h1 {
-    color: #244751;
+
+
+  .opponent img{
+
+    height: 110px;
+    width: 85px;
+    position: relative;
+
+
+  }
+
+  .player img{
+    height: 110px;
+    width: 85px;
+    position: relative;
+    bottom: -400px;
+    opacity: .8;
+    &:hover{
+    position: relative;
+    bottom: -380px;
+    opacity: 1.0;
   }
 }
+
+}
+
