@@ -6,18 +6,17 @@ const router  = express.Router();
 module.exports = (knex) => {
 
   router.get("/", (req, res) => {
-
-    var hostName = knex('users').select('name').join('games', 'users.id', 'games.host_id').as('host_name');
-    var guestName = knex('users').select('name').join('games', 'users.id', 'games.guest_id').as('guest_name');
-    var nameOfPersonWithTurn = knex('users').select('name').join('games', 'users.id', 'games.whos_turn').as('whos_turn_name');
-    knex
-      .select('type', hostName, guestName, nameOfPersonWithTurn)
+    knex.select('type', 'host_id', 'host.name AS host_name', 'guest_id', 'guest.name AS guest_name', 'whose_turn')
       .from("games")
+      .join("users AS host", "host.id", "games.host_id")
+      .join("users AS guest", "guest.id", "games.guest_id")
+      .where("host_id", 1)
+      .orWhere("guest_id", 1)
       .then((results) => {
         res.json(results);
-    });
+      });
   });
 
-  return router;
+ return router;
 }
 

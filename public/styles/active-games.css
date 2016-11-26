@@ -21,6 +21,7 @@ article.game header img {
   border-radius: 10px;
   height: 80px;
   width: 80px;
+  float: left;
 }
 
 
