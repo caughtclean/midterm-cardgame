@@ -73,12 +73,12 @@ exports.seed = function(knex, Promise) {
         knex('games').insert({type: 'Goofspiel', host_id: 2, guest_id: 1, status: 'active', result: null, whose_turn: 2, host_score: 21, guest_score: 2, game_state: {
           board: {
             prize: ["4D", "10D"],
-            host_card: [],
+            host_card: ["1S"],
             guest_card: []
           },
           hands: {
             prize: ["10D", "11D", "9D", "12D", "13D"],
-            host_hand: ["1S", "2S", "3S", "11S", "12S"],
+            host_hand: ["2S", "3S", "11S", "12S"],
             guest_hand: ["1C", "4C", "5C", "6C", "10C"]
           }
         }
