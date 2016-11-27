@@ -130,7 +130,7 @@ $(function() {
   setTimeout(dealPrize, 2250);
 
   $('.player .card').on('click', function() {
-    $(this).css('left', '450px');
+    $(this).css('left', '405px');
     $(this).css('top', '250px');
     // debugger
     gameState.player_card = ($(this).data('cardid'))
@@ -146,7 +146,8 @@ $(function() {
 
 
 });
-function GetGame {
+
+function GetGame() {
  $.ajax({
     url: "/games/:game_id",
     method: "GET"
@@ -186,7 +187,7 @@ function dealOpponentCards() {
 function dealPrize() {
   $('.prize .card').each(function () {
 
-    var distFromLeft = ($(this).data('rank') - 1) + 550
+    var distFromLeft = ($(this).data('rank') - 1) * ($(this).width() -65) + 550
     $(this).css('left',`${distFromLeft}px`);
   });
 
