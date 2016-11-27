@@ -1,7 +1,31 @@
 body {
-  background-color: #EEE;
+  background-image: url("/images/poker-table-background.jpg");
+  position: relative;
 
-  h1 {
-    color: #244751;
+  img.card{
+    height: 110px;
+    width: 85px;
+    position: absolute;
+    left:0px;
+    transition: left 1000ms, opacity 400ms;
+  }
+
+
+  .opponent .card{
+
+
+  }
+  .prize img{
+    top: 250px;
+    left: -100px;
+  }
+  .player .card{
+    top: 500px;
+    opacity: .8;
+    &:hover{
+      opacity: 1.0;
+      top: 490px;
+    }
+
   }
 }
