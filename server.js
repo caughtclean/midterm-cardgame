@@ -259,78 +259,81 @@ function shuffle(array) {
 
 function processTurn(userid, gameid, card){
 
-  var game = knex("games").select('host_id', 'guest_id', 'host_score', 'guest_score', 'game_state').where('id', gameid);
-  var gameState = game.game_state;
-  var hostId = game.host_id;
-  var guestId = game.guest_id;
+  knex("games").select('host_id', 'guest_id', 'host_score', 'guest_score', 'game_state').where('id', gameid).then((game) => {
+    var gameState = game.game_state;
+    var hostId = game.host_id;
+    var guestId = game.guest_id;
 
-  var otherPlayer;
+    var otherPlayer;
 
-  if (userid === hostId){
-    otherPlayer = guestId;
-    var hostHand = gameState.hands.host_hand;
-    hostHand.splice(hostHand.indexOf(card), 1); //remove card from host hand
-    gameState.board.host_card = card;
+    if (userid === hostId){
+      otherPlayer = guestId;
+      var hostHand = gameState.hands.host_hand;
+      hostHand.splice(hostHand.indexOf(card), 1); //remove card from host hand
+      gameState.board.host_card = card;
 
-  } else if (user === guestId){
-    otherPlayer = hostId;
-    var guestHand = gameState.hands.guest_hand;
-    guestHand.splice(guestHand.indexOf(card), 1); //remove card from guest hand
-    gameState.board.guest_card = card;
-
-  } else {
-    // error out
-  }
-
-  var hostCard = gameState.board.host_card;
-  var guestCard = gameState.board.guest_card;
-  var prizeArray = gameState.board.prize;
-
-  if (hostCard && guestCard){
-    //both players have made their turns, do logic
-
-    //find rank of both cards
-    var hostRank = hostCard.slice(0,-1);
-    var guestRank = guestCard.slice(0,-1);
-
-    var sumPrizes = 0;
-    for (prize of prizeArray){
-      sumPrizes += Number(prize.slice(0, -1)); //total points to be won this round
-    }
-
-    if (hostRank === guestRank){
-      //draw: update necessary stuff in the db (prize, turns, etc)
-
-      gameState.board.host_card = null;
-      gameState.board.guest_card = null;
-      gameState.board.prize.push(gameState.hands.prize.pop());
-
-      knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState});
+    } else if (userid === guestId){
+      otherPlayer = hostId;
+      var guestHand = gameState.hands.guest_hand;
+      guestHand.splice(guestHand.indexOf(card), 1); //remove card from guest hand
+      gameState.board.guest_card = card;
 
     } else {
-
-      // remove played cards from board, flip new prize, update game state
-      gameState.board.host_card = null;
-      gameState.board.guest_card = null;
-      gameState.board.prize = gameState.hands.prize.pop();
-
-      if (hostRank > guestRank){
-        //host wins, add score to host, end turn
-        knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState}).increment('host_score', sumPrizes);
-      } else {
-        //guest wins
-        knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState}).increment('guest_score', sumPrizes);
-      }
-
+      // error out
     }
 
+    var hostCard = gameState.board.host_card;
+    var guestCard = gameState.board.guest_card;
+    var prizeArray = gameState.board.prize;
+
+    if (hostCard && guestCard){
+      //both players have made their turns, do logic
+
+      //find rank of both cards
+      var hostRank = hostCard.slice(0,-1);
+      var guestRank = guestCard.slice(0,-1);
+
+      var sumPrizes = 0;
+      for (prize of prizeArray){
+        sumPrizes += Number(prize.slice(0, -1)); //total points to be won this round
+      }
+
+      if (hostRank === guestRank){
+        //draw: update necessary stuff in the db (prize, turns, etc)
+
+        gameState.board.host_card = null;
+        gameState.board.guest_card = null;
+        gameState.board.prize.push(gameState.hands.prize.pop());
+
+        knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState});
+
+      } else {
+
+        // remove played cards from board, flip new prize, update game state
+        gameState.board.host_card = null;
+        gameState.board.guest_card = null;
+        gameState.board.prize = gameState.hands.prize.pop();
+
+        if (hostRank > guestRank){
+          //host wins, add score to host, end turn
+          knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState}).increment('host_score', sumPrizes);
+        } else {
+          //guest wins
+          knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState}).increment('guest_score', sumPrizes);
+        }
+
+      }
 
 
 
-  } else {
-    //wait for other player to make turn
-    knex("games").where("id", gameid).update({whose_turn: otherPlayer, game_state: gameState});
-  }
+
+    } else {
+      //wait for other player to make turn
+      knex("games").where("id", gameid).update({whose_turn: otherPlayer, game_state: gameState});
+    }
+
+  });
+
 
 
 
