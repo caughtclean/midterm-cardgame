@@ -2,12 +2,14 @@
 
 require('dotenv').config();
 
-const PORT        = process.env.PORT || 8080;
-const ENV         = process.env.ENV || "development";
-const express     = require("express");
-const bodyParser  = require("body-parser");
-const sass        = require("node-sass-middleware");
-const app         = express();
+const PORT          = process.env.PORT || 8080;
+const ENV           = process.env.ENV || "development";
+const express       = require("express");
+const bodyParser    = require("body-parser");
+const sass          = require("node-sass-middleware");
+const app           = express();
+const session       = require('express-session');
+const cookieSession = require('cookie-session');
 
 const knexConfig  = require("./knexfile");
 const knex        = require("knex")(knexConfig[ENV]);
@@ -35,6 +37,10 @@ app.use("/styles", sass({
   outputStyle: 'expanded'
 }));
 app.use(express.static("public"));
+app.use(cookieSession({
+  name: 'session',
+  keys: ['secret'],
+}))
 
 // Mount all resource routes
 // app.use("/api/users", usersRoutes(knex));
@@ -63,9 +69,14 @@ app.get("/user/:userid", (req, res) => {
 
 app.post("/login", (req, res) => {
   //user login
-  knex.select("name","password").from("users").where({ name: req.body.name, password: req.body.password }).then((results) => {
-    const user = results[0];
+  let name = req.body.name;
+
+  knex.select("name","password","id").from("users").where({ name: req.body.name, password: req.body.password }).then((results) => {
+    let user_id = results[0].id;
+    let user = results[0];
     if(user){
+    req.session.id = user_id;
+    console.log(req.session.id);
       //create session e
       return res.redirect("/");
     } else {
@@ -73,7 +84,7 @@ app.post("/login", (req, res) => {
       res.status(403);
       return res.render("login");
     }
-})
+  })
 });
 
 app.post("/logout", (req, res) => {
@@ -99,20 +110,32 @@ app.post("/games", (req, res) => {
 
 app.post("/", (req, res) => {
   console.log("posting to root");
-  var user = 1;
-  knex.select("id").from("games").where({guest_id: null}).limit(1).then((game) => {
-    if (game) {
-      console.log(typeof(game))
-      console.log("found half-filled game", game);
-      knex("games").where("id", game).update({guest_id: user}).then();
+  var user = req.session.id;
+  knex.select("id").from("games").where({guest_id: null}).where("host_id", '!=', user).limit(1).then((game) => {
+    if(game.length > 0) {
+      return knex("games").where("id", game[0].id).update({guest_id: user})
     } else {
-      console.log("no half-filled game; making new game");
-      let newGame = {type: "Goofspiel", host_id: user, guest_id: null, whos_turn: user, host_score: 0, guest_score: 0, turn_number: 0};
-      knex.insert(newGame).into("games").then();
-
-      res.redirect("/")
+      console.log("no open games; making new game");
+      let newGame = {type: "Goofspiel", status: "active", host_id: user, guest_id: null, whose_turn: user, host_score: 0, guest_score: 0, game_state: {
+        board:{
+          prize:[],
+          host_card:[],
+          guest_card:[]
+        },
+        hands:{
+          prize: ["1D", "2D", "3D", "4D", "5D", "6D", "7D", "8D", "9D", "10D", "11D", "12D", "13D"],
+          host_hand: ["1S", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "10S", "11S", "12S", "13S"],
+          guest_hand: ["1C", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "11C", "12C", "13C"]
+        }
+      }
+    };
+      return knex.insert(newGame).into("games");
     }
-  })
+  }).then(() => {
+    res.redirect("/")
+  }).catch((error) => {
+
+  });
 
 });
 
