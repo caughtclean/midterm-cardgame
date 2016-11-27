@@ -260,10 +260,11 @@ function shuffle(array) {
 function processTurn(userid, gameid, card){
 
   knex("games").select('host_id', 'guest_id', 'host_score', 'guest_score', 'game_state').where('id', gameid).then((game) => {
-    var gameState = game.game_state;
-    var hostId = game.host_id;
-    var guestId = game.guest_id;
+    var gameState = JSON.parse(game[0].game_state);
+    var hostId = game[0].host_id;
+    var guestId = game[0].guest_id;
 
+    debugger
     var otherPlayer;
 
     if (userid === hostId){
@@ -274,6 +275,7 @@ function processTurn(userid, gameid, card){
 
     } else if (userid === guestId){
       otherPlayer = hostId;
+      console.log(gameState.hands)
       var guestHand = gameState.hands.guest_hand;
       guestHand.splice(guestHand.indexOf(card), 1); //remove card from guest hand
       gameState.board.guest_card = card;
