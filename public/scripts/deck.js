@@ -4,7 +4,7 @@ gameState = {
   player_card: ""
 }
 
-
+var player_card = ""
 
 
 
@@ -66,8 +66,25 @@ function prize(cards) {
   });
 };
 
+function opponentCard(cards) {
+  cards = cards.map(function(card) {
+    var rank = card.slice(0,-1);
+    var suit = card.slice(-1)
 
+    var lookup = {
+      "S": "spades",
+      "D": "diamonds",
+      "H": "hearts",
+      "C": "clubs"
+    }
+    return { rank: rank, suit: lookup[suit] }
+  });
 
+  cards.forEach(function(card) {
+    var opponentPlayed = cardElement(card)
+    $('.opponentCard').append(opponentPlayed);
+  });
+};
 
 
 
@@ -89,44 +106,41 @@ function render(data) {
   $('.player').empty();
   $('.opponent').empty();
   $('.prize').empty();
+  $('.opponentCard').empty();
+
+  function sendCard() {
+    var game_url = window.location.pathname
+
+    $.ajax({
+
+    type: 'POST',
+    url: game_url,
+    data: player_card,
+    success: function(msg) {
+      alert('wow' + msg)
+    }
+  });
+};
 
   player(data.hand);
   opponent(data.opponent_card_count);
   prize(data.board.prize);
-  console.log(data)
+  $(document).on('click', '.player .card', function() {
+    player_card = ($(this).data('cardid'))
+    opponentCard(data.board.guest_card)
+    sendCard();
+    $(document).off('click', '.player .card')
+  });
+
 }
 
 $(function() {
 
-  // remove when api is available
-  // GET /games/:id
-
-  // function getData() {
-  //   var hand = [];
-  //   var prize = [];
-
-  //   for(var i = 1; i < 14; i += 1) {
-  //     hand.push(i + ":S");
-  //   }
-  //   for(var j = 1; j < 2; j += 1) {
-  //     prize.push(j + ":D");
-  //   }
-
-  //   return {
-  //     opponent_card_count: 13, // contain the number of cards that the opponent has
-  //     hand: hand, // contain only the local players cards as an array
-  //     board: {
-  //       prize: prize,
-  //       host_card: '',
-  //       guest_card: ''
-  //     }
-  //   }
-  // }
 
   function GetGame(url) {
 
     var game_url = window.location.pathname + "/state"
-    console.log(game_url);
+
 
     $.ajax({
 
@@ -141,6 +155,8 @@ $(function() {
 
 
 
+
+
   GetGame();
   setTimeout(dealCards, 100);
   setTimeout(dealOpponentCards, 900);
@@ -150,7 +166,8 @@ $(function() {
     $(this).css('left', '405px');
     $(this).css('top', '250px');
     gameState.player_card = ($(this).data('cardid'))
-    console.log(gameState)
+    setTimeout(dealOpponentCard, 50);
+    $('.opponent .card').last().slideUp()
     $(document).off('click', '.player .card')
 
   });
@@ -197,6 +214,16 @@ function dealPrize() {
 
     var distFromLeft = $(this).data('rank') * ($(this).width() -82) + 550
     $(this).css('left', `${distFromLeft}px`);
+  });
+
+}
+
+function dealOpponentCard() {
+  $('.opponentCard .card').each(function() {
+
+    var distFromLeft = $(this).data('rank') * ($(this).width() -82) + 690
+    $(this).css('left', `${distFromLeft}px`);
+    $(this).css('top', '250px')
   });
 
 }

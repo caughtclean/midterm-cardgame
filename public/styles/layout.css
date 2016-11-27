@@ -8,7 +8,7 @@ body img.card {
   width: 85px;
   position: absolute;
   left: 0px;
-  transition: left 1000ms, opacity 400ms;
+  transition: left 1500ms, opacity 200ms;
 }
 
 body .opponent .card {
@@ -16,6 +16,11 @@ body .opponent .card {
 }
 
 body .prize img {
+  top: 250px;
+  left: -100px;
+}
+
+body .opponentCard img {
   top: 250px;
   left: -100px;
 }
