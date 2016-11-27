@@ -124,7 +124,7 @@ app.get("/game/:game_id/state", (req, res) => {
   // var userId = req.session.id;
   // knex.select('id', 'host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
 
-  var userId = 2;
+  var userId = 3;
   knex.select('id', 'host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
 
     // res.json(results);

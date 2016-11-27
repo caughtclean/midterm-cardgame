@@ -136,7 +136,7 @@ $(function() {
 
 
 
-  GetGame(11);
+  GetGame(16);
   setTimeout(dealCards, 100);
   setTimeout(dealOpponentCards, 900);
   setTimeout(dealPrize, 2250);
