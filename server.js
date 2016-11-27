@@ -159,7 +159,7 @@ app.post("/", (req, res) => {
       return knex.insert(newGame).into("games");
     }
   }).then(() => {
-    res.redirect("/")
+    res.redirect("/table")
   }).catch((error) => {
 
   });

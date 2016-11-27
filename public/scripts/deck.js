@@ -146,7 +146,7 @@ $(function() {
 
 
 });
-function GetGame {
+function GetGame(){
  $.ajax({
     url: "/games/:game_id",
     method: "GET"
