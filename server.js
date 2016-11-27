@@ -19,6 +19,7 @@ const knexLogger  = require('knex-logger');
 // Seperated Routes for each Resource
 const usersRoutes = require("./routes/users");
 const gamesRoutes = require("./routes/games");
+//use goofspiel logic on post from game
 
 // Load the logger first so all (static) HTTP requests are logged to STDOUT
 // 'dev' = Concise output colored by response status for development use.
@@ -114,6 +115,16 @@ app.post("/register", (req, res) => {
   // user registration
 });
 
+app.post("/game/:game_id", (req, res) => {
+  let userid = req.session.id;
+  let gameid = req.params.game_id;
+  let card = req.body.card;
+  //require goofspiel logic.
+
+
+  res.render('table')
+});
+
 app.get("/game/:game_id", (req, res) => {
   res.render('table')
 });
@@ -201,6 +212,7 @@ app.post("/", (req, res) => {
       // knex('books').insert({title: 'Slaughterhouse Five'})
        return knex('games').returning('id').insert(newGame).then(function(newgameid){
         id = newgameid;
+        console.log(id);
        })
       // return knex.insert(newGame).into("games");
     }
