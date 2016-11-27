@@ -128,7 +128,7 @@ app.get("/game/:game_id/state", (req, res) => {
   knex.select('id', 'host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
 
     // res.json(results);
-    console.log(results[0].game_state);
+    console.log(results);
 
     const gameState = JSON.parse(results[0].game_state);
     const hostId = results[0].host_id;

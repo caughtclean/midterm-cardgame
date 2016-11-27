@@ -47,10 +47,8 @@ function player(cards) {
 
 function prize(cards) {
   cards = cards.map(function(card) {
-    var copy = card;
-    var info = card.split(":");
-    var rank = info[0];
-    var suit = info[1];
+    var rank = card.slice(0,-1);
+    var suit = card.slice(-1)
 
     var lookup = {
       "S": "spades",
@@ -124,10 +122,10 @@ $(function() {
   //   }
   // }
 
-  function GetGame() {
+  function GetGame(url) {
 
     $.ajax({
-      url: "/game/3/state",
+      url: "/game/"+ url +"/state",
       method: "GET"}).done(
       function(data) {
         render(data);
@@ -138,7 +136,7 @@ $(function() {
 
 
 
-  GetGame();
+  GetGame(11);
   setTimeout(dealCards, 100);
   setTimeout(dealOpponentCards, 900);
   setTimeout(dealPrize, 2250);
@@ -192,7 +190,7 @@ function dealOpponentCards() {
 function dealPrize() {
   $('.prize .card').each(function() {
 
-    var distFromLeft = ($(this).data('rank') - 1) * ($(this).width() - 65) + 550
+    var distFromLeft = $(this).data('rank') * ($(this).width() -82) + 550
     $(this).css('left', `${distFromLeft}px`);
   });
 
