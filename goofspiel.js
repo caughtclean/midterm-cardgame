@@ -1,62 +1,25 @@
-const express = require('express');
-const router  = express.Router();
+function processTurn(userid, gameid, card){
 
-module.exports = (knex) => {
-
-  //this will probably get removed
-  // router.get("/", (req, res) => {
-  //   knex
-  //     .select("*")
-  //     .from("users")
-  //     .then((results) => {
-  //       res.json(results);
-  //   });
-  // });
-
-
-//i don't know let's just do stuff
-
-
-/// this is the object nathan wants back
-
-// {
-//      opponent_card_count: 13, // contain the number of cards that the opponent has
-//      hand: hand, // contain only the local players cards as an array
-//      board: {
-//        prize: prize,
-//        host_card: '',
-//        guest_card: ''
-//      }
-// }
-
-function processTurn(body){
-
-  var userId = body.user_id;
-
-  var game = knex("games").select('host_id', 'guest_id', 'host_score', 'guest_score', 'game_state').where('id', body.game_id);
+  var game = knex("games").select('host_id', 'guest_id', 'host_score', 'guest_score', 'game_state').where('id', gameid);
   var gameState = game.game_state;
   var hostId = game.host_id;
   var guestId = game.guest_id;
 
-  var user;
   var otherPlayer;
 
-  if (userId === hostId){
-    user = "host";
+  if (userid === hostId){
     otherPlayer = guestId;
     var hostHand = gameState.hands.host_hand;
-    hostHand.splice(hostHand.indexOf(body.card), 1); //remove card from host hand
-    gameState.board.host_card = body.card;
+    hostHand.splice(hostHand.indexOf(card), 1); //remove card from host hand
+    gameState.board.host_card = card;
 
   } else if (user === guestId){
-    user = "guest";
     otherPlayer = hostId;
     var guestHand = gameState.hands.guest_hand;
-    guestHand.splice(guestHand.indexOf(body.card), 1); //remove card from guest hand
-    gameState.board.guest_card = body.card;
+    guestHand.splice(guestHand.indexOf(card), 1); //remove card from guest hand
+    gameState.board.guest_card = card;
 
   } else {
-    user = "nobody";
     // error out
   }
 
@@ -83,7 +46,7 @@ function processTurn(body){
       gameState.board.guest_card = null;
       gameState.board.prize.push(gameState.hands.prize.pop());
 
-      knex("games").where("id", body.game_id).update({whose_turn: userId, game_state: gameState});
+      knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState});
 
     } else {
 
@@ -94,10 +57,10 @@ function processTurn(body){
 
       if (hostRank > guestRank){
         //host wins, add score to host, end turn
-        knex("games").where("id", body.game_id).update({whose_turn: userId, game_state: gameState}).increment('host_score', sumPrizes);
+        knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState}).increment('host_score', sumPrizes);
       } else {
         //guest wins
-        knex("games").where("id", body.game_id).update({whose_turn: userId, game_state: gameState}).increment('guest_score', sumPrizes);
+        knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState}).increment('guest_score', sumPrizes);
       }
 
     }
@@ -107,11 +70,13 @@ function processTurn(body){
 
   } else {
     //wait for other player to make turn
-    // TODO
-
-    knex("games").where("id", body.game_id).update({whose_turn: otherPlayer, game_state: gameState});
-    //render ???
+    knex("games").where("id", gameid).update({whose_turn: otherPlayer, game_state: gameState});
   }
+
+
+
+}
+
 
 
   // this is the gamestate in the database
@@ -127,10 +92,6 @@ function processTurn(body){
   //     "guest_hand": []
   //   }
   // }
-
-
-}
-
 
 
 // game_state: {
@@ -151,9 +112,6 @@ function processTurn(body){
 
 
 
-
-  return router;
-
 // {type: 'Goofspiel', host_id: 1, guest_id: 2, status: 'active', result: null, whose_turn: 1, host_score: 0, guest_score: 0, game_state: {
 //           board: {
 //             prize: [],
@@ -167,3 +125,7 @@ function processTurn(body){
 //           }
 //         }
 //       }
+
+function endGame() {
+
+}
