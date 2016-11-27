@@ -126,6 +126,7 @@ $(function() {
   function GetGame(url) {
 
     var game_url = window.location.pathname + "/state"
+
     console.log(game_url);
 
     $.ajax({
