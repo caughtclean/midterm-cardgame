@@ -1,7 +1,7 @@
 main.container {
   margin: 120px;
 }
-article.game {
+div.game {
   background-color: #fff;
   border: 1px solid gray;
   border-radius: 10px;
@@ -12,12 +12,12 @@ article.game {
   padding: 10px;
 }
 
-article.game:hover {
+div.game:hover {
   border: 1px solid black;
   opacity: 1.0
 }
 
-article.game header img {
+div.game img {
   border-radius: 10px;
   height: 80px;
   width: 80px;
@@ -25,13 +25,17 @@ article.game header img {
 }
 
 
-article.game header text {
+div.game h1 {
     vertical-align: top;
     padding-left: 10px;
     font-size: 150%;
 }
 
-
+div.game p {
+    vertical-align: top;
+    padding-left: 10px;
+    font-size: 150%;
+}
 
 
 
