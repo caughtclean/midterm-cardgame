@@ -123,13 +123,13 @@ app.post("/register", (req, res) => {
   // user registration
 });
 
-app.get("/games", (req, res) => {
-  //get list of active games for the user
+app.get("/game/:game_id", (req, res) => {
+  res.render('table')
 });
 
-app.get("/game/:game_id", (req, res) => {
+app.get("/game/:game_id/state", (req, res) => {
   //go into the game
-  var userId = req.session.id;
+  var userId = 2;
   knex.select('host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
     // res.json(results);
     console.log(results[0].game_state);
@@ -137,7 +137,7 @@ app.get("/game/:game_id", (req, res) => {
     const gameState = JSON.parse(results[0].game_state);
     const hostId = results[0].host_id;
     const guestId = results[0].guest_id;
-
+    debugger
     let myHand = (userId === hostId) ? gameState.hands.host_hand : gameState.hands.guest_hand;
 
     // game_state: {
@@ -162,7 +162,7 @@ app.get("/game/:game_id", (req, res) => {
         guest_card: gameState.board.guest_card
       }
     };
-    res.render("table", tableState);
+    res.json(tableState);
   });
 
 
