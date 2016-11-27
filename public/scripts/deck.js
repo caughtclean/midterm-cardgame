@@ -143,13 +143,12 @@ $(function() {
   setTimeout(dealOpponentCards, 900);
   setTimeout(dealPrize, 2250);
 
-  $('.player .card').on('click', function() {
+  $(document).on('click', '.player .card', function() {
     $(this).css('left', '405px');
     $(this).css('top', '250px');
-    // debugger
     gameState.player_card = ($(this).data('cardid'))
-    $('.card').off('click');
-
+    console.log(gameState)
+    $(document).off('click', '.player .card')
 
   });
 
