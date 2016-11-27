@@ -11,6 +11,10 @@ body img.card {
   transition: left 1000ms, opacity 400ms;
 }
 
+body .opponent .card {
+  border-radius: 5px;
+}
+
 body .prize img {
   top: 250px;
   left: -100px;

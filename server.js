@@ -58,19 +58,6 @@ app.get("/", (req, res) => {
 //send users games to render
         console.log(results);
         res.render("index", {results});
-
-
-
-
-
-
-
-
-
-
-
-
-
       // })
     })
   }
@@ -122,21 +109,25 @@ app.post("/register", (req, res) => {
   // user registration
 });
 
-app.get("/games", (req, res) => {
-  //get list of active games for the user
+app.get("/game/:game_id", (req, res) => {
+  res.render('table')
 });
 
-app.get("/game/:game_id", (req, res) => {
+app.get("/game/:game_id/state", (req, res) => {
   //go into the game
-  var userId = req.session.id;
-  knex.select('id', 'host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
+
+  // var userId = req.session.id;
+  // knex.select('id', 'host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
+
+  var userId = 2;
+  knex.select('host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
+
     // res.json(results);
     console.log(results[0].game_state);
 
     const gameState = JSON.parse(results[0].game_state);
     const hostId = results[0].host_id;
     const guestId = results[0].guest_id;
-
     let myHand = (userId === hostId) ? gameState.hands.host_hand : gameState.hands.guest_hand;
 
     // game_state: {
