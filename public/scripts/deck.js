@@ -116,8 +116,8 @@ function render(data) {
     type: 'POST',
     url: game_url,
     data: player_card,
-    success: function(msg) {
-      alert('wow' + msg)
+    success: function() {
+      console.log("sent!")
     }
   });
 };
@@ -128,6 +128,7 @@ function render(data) {
   $(document).on('click', '.player .card', function() {
     player_card = ($(this).data('cardid'))
     opponentCard(data.board.guest_card)
+    $('opponentCard').slideUp()
     sendCard();
     $(document).off('click', '.player .card')
   });
