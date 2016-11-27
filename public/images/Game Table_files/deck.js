@@ -1,11 +1,4 @@
-gameState = {
-  id: 0,
-  host_id: 0,
-  player_card: ""
-}
-
-
-
+// var spades = [ {rank: "ace", suit: "spades"}, {rank: "2", suit: "spades"},{rank: "3", suit: "spades"},{rank: "4", suit: "spades"},{rank: "5", suit: "spades"},{rank: "6", suit: "spades"},{rank: "7", suit: "spades"},{rank: "8", suit: "spades"},{rank: "9", suit: "spades"},{rank: "10", suit: "spades"},{rank: "jack", suit: "spades"},{rank: "queen", suit: "spades"},{rank: "king", suit: "spades"}]
 
 function cardElement(cardObj) {
   const rank = cardObj.rank;
@@ -16,7 +9,6 @@ function cardElement(cardObj) {
       <img  class="${rank}${suitInitial} card"
             data-rank="${rank}"
             data-suit="${suit}"
-            data-cardid="${rank}${suitInitial}"
             src="/images/${rank}_of_${suit}.png" />
 
   `
@@ -74,7 +66,7 @@ cards.forEach (function(card) {
 function opponent(count) {
   var cards = [];
 
-  for(var i = 1; i <= count; i += 1) {
+  for(var i = 0; i < count + 1; i += 1) {
     cards.push({rank: i, suit: "back"});
   }
 
@@ -122,47 +114,29 @@ $(function() {
     }
   }
 
-
+  // $.ajax({
+  //   url: "/games/:game_id",
+  //   method: "GET"
+  // }).success(function(data) {
+  //   render(data);
+  // })
 
   render(getData());
   setTimeout(dealCards,100);
-  setTimeout(dealOpponentCards,900);
-  setTimeout(dealPrize, 2250);
+  setTimeout(dealOpponentCards,1000);
 
-  $('.player .card').on('click', function() {
-    $(this).css('left', '450px');
-    $(this).css('top', '250px');
-    // debugger
-    gameState.player_card = ($(this).data('cardid'))
-    $('.card').off('click');
-    console.log(gameState)
-
+  $('.card').click(function() {
+    // $('.card').slideUp();
+    // $('.card').animate({right: "-=375px"});
+    // $('.card').animate({top: "+=113px"});
+    // $('.card').slideDown();
+    console.log("cardeventhander");
   });
 
 
 
 
-
-
-
 });
-function GetGame(){
- $.ajax({
-    url: "/game/:game_id",
-    method: "GET"
-  }).success(function(data) {
-    render(data);
-  })
-}
-
-GetGame()
-
-
-
-
-
-
-
 
 
 function dealCards() {
@@ -183,12 +157,54 @@ function dealOpponentCards() {
 
 }
 
-function dealPrize() {
-  $('.prize .card').each(function () {
 
-    var distFromLeft = ($(this).data('rank') - 1) + 550
-    $(this).css('left',`${distFromLeft}px`);
-  });
 
-}
 
+
+
+
+
+
+
+    // $('.2S').click(function() {
+    //   $('.2S').slideUp();
+    //   $('.2S').animate({right: "-=290px"});
+    //   $('.2S').animate({top: "+=113px"});
+    //   $('.2S').slideDown();
+    //     });
+    // $('.3S').click(function() {
+    //   $('.3S').slideUp();
+    //   $('.3S').animate({right: "-=200px"});
+    //   $('.3S').animate({top: "+=113px"});
+    //   $('.3S').slideDown();
+    //     });
+    // $('.4S').click(function() {
+    //   $('.4S').slideUp();
+    //   $('.4S').animate({right: "-=110px"});
+    //   $('.4S').animate({top: "+=113px"});
+    //   $('.4S').slideDown();
+    //     });
+    // $('.5S').click(function() {
+    //   $('.5S').slideUp();
+    //   $('.5S').animate({right: "-=20px"});
+    //   $('.5S').animate({top: "+=113px"});
+    //   $('.5S').slideDown();
+    //     });
+    // $('.6S').click(function() {
+    //   $('.6S').slideUp();
+    //   $('.6S').animate({right: "+=70px"});
+    //   $('.6S').animate({top: "+=113px"});
+    //   $('.6S').slideDown();
+    //     });
+    // $('.7S').click(function() {
+    //   $('.7S').slideUp();
+    //   $('.7S').animate({right: "+=160px"});
+    //   $('.7S').animate({top: "+=113px"});
+    //   $('.7S').slideDown();
+    //     });
+    // $('.8S').click(function() {
+    //   $('.8S').slideUp();
+    //   $('.8S').animate({right: "+=150px"});
+    //   $('.8S').animate({top: "+=113px"});
+    //   $('.8S').slideDown();
+    //     });
