@@ -17,6 +17,7 @@ module.exports = (knex) => {
       .where("host_id", 1)
       .orWhere("guest_id", 1)
       .then((results) => {
+        console.log(results);
         res.json(results);
       });
   });

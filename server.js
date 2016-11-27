@@ -129,7 +129,7 @@ app.get("/games", (req, res) => {
 app.get("/game/:game_id", (req, res) => {
   //go into the game
   var userId = req.session.id;
-  knex.select('host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
+  knex.select('id', 'host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
     // res.json(results);
     console.log(results[0].game_state);
 
@@ -153,6 +153,7 @@ app.get("/game/:game_id", (req, res) => {
     //    }
 
     let tableState = {
+      game_id: results[0].game_id;
       opponent_card_count: gameState.hands.guest_hand.length, // contain the number of cards that the opponent has
       hand: myHand, // contain only the local players cards as an array
       board: {
@@ -161,7 +162,7 @@ app.get("/game/:game_id", (req, res) => {
         guest_card: gameState.board.guest_card
       }
     };
-    res.render("table", tableState);
+    res.json(tableState);
   });
 
 
