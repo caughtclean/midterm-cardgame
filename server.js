@@ -120,7 +120,7 @@ app.get("/game/:game_id/state", (req, res) => {
   // knex.select('id', 'host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
 
   var userId = 2;
-  knex.select('host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
+  knex.select('id', 'host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
 
     // res.json(results);
     console.log(results[0].game_state);
@@ -144,7 +144,7 @@ app.get("/game/:game_id/state", (req, res) => {
     //    }
 
     let tableState = {
-      game_id: results[0].game_id;
+      game_id: results[0].id,
       opponent_card_count: gameState.hands.guest_hand.length, // contain the number of cards that the opponent has
       hand: myHand, // contain only the local players cards as an array
       board: {
@@ -171,16 +171,24 @@ app.post("/", (req, res) => {
       return knex("games").where("id", game[0].id).update({guest_id: user})
     } else {
       console.log("no open games; making new game");
+
+      var spades = ["1S", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "10S", "11S", "12S", "13S"];
+      var clubs = ["1C", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "11C", "12C", "13C"];
+      var diamonds = shuffle(["1D", "2D", "3D", "4D", "5D", "6D", "7D", "8D", "9D", "10D", "11D", "12D", "13D"]);
+
+      var firstPrize = [];
+      firstPrize.push(diamonds.pop());
+
       let newGame = {type: "Goofspiel", status: "active", host_id: user, guest_id: null, whose_turn: user, host_score: 0, guest_score: 0, game_state: {
         board:{
-          prize:[],
+          prize: firstPrize,
           host_card:[],
           guest_card:[]
         },
         hands:{
-          prize: ["1D", "2D", "3D", "4D", "5D", "6D", "7D", "8D", "9D", "10D", "11D", "12D", "13D"],
-          host_hand: ["1S", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "10S", "11S", "12S", "13S"],
-          guest_hand: ["1C", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "11C", "12C", "13C"]
+          prize: diamonds,
+          host_hand: spades,
+          guest_hand: clubs
         }
       }
     };
@@ -203,3 +211,25 @@ app.listen(PORT, () => {
 function generateRandomString() {
   return (100000*Math.random()).toString(36).replace(/[^a-z0-9]+/g, '').substr(0, 6);
 }
+
+
+//Fisher Yates shuffling
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
