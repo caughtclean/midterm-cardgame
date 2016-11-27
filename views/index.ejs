@@ -25,9 +25,13 @@
 
     <!-- Top nav bar (fixed) -->
     <nav id="nav-bar">
-      <img class="logo" src="/images/suits.png">
+      <img class="logo" src="/images/logo.png">
       <span class="header">Goofspiel</span>
-      <text class="compose">New Game <i class="fa fa-sign-in" aria-hidden="true"></i></text>
+      <text class="compose">New Game <i class="fa fa-sign-in" a  ria-hidden="true"></i></text>
+      <form method='POST' action='/logout'>
+        <label for='logout'></label>
+        <input type='submit' value='logout'></input>
+      </form>
     </nav>
 
     <!-- Page-specific (main) content here -->
@@ -45,9 +49,10 @@
     <section id="games-container">
     <% results.forEach(function(game) { %>
       <div class="game">
-        <img src="/images/suits.png"/>
+        <img src="/images/logo.png"/>
         <h1><%=game.type%></h1>
-        <p>Playing against: <%=game.guest_id%></p>
+        <p>Host: <%=game.host_name%></p>
+        <p>Guest: <%=game.guest_name%></p>
         <p>It is <%=game.whose_turn%> turn</p>
       </div>
     <% }) %>
