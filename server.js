@@ -47,7 +47,34 @@ app.use(cookieSession({
 app.use("/api/games", gamesRoutes(knex));
 
 app.get("/", (req, res) => {
-  res.render("index");
+//check if user logged in
+  let currentUser = req.session.id;
+  if(!currentUser) {
+    res.redirect("/login");
+  } else {
+//assemble this users games
+    knex.select("type", "host_id", "guest_id", "whose_turn").from("games").where({host_id: currentUser}).orWhere({guest_id: currentUser}).then((results) => {
+      // results.forEach(function(game) {
+      //   console.log(game)
+//send users games to render
+        console.log(results);
+        res.render("index", {results});
+
+
+
+
+
+
+
+
+
+
+
+
+
+      // })
+    })
+  }
 });
 
 app.get("/table", (req, res) => {

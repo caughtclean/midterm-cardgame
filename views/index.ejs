@@ -43,7 +43,16 @@
     </section>
 
     <section id="games-container">
+    <% results.forEach(function(game) { %>
+      <div class="game">
+        <img src="/images/suits.png"/>
+        <h1><%=game.type%></h1>
+        <p>Playing against: <%=game.guest_id%></p>
+        <p>It is <%=game.whose_turn%> turn</p>
+      </div>
+    <% }) %>
     </section>
+
     </main>
 
     <!-- External JS -->
