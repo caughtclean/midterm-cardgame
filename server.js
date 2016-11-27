@@ -111,7 +111,7 @@ app.post("/login", (req, res) => {
       res.status(403);
       return res.render("login");
     }
-  })
+  });
 });
 
 app.post("/logout", (req, res) => {
@@ -127,8 +127,45 @@ app.get("/games", (req, res) => {
   //get list of active games for the user
 });
 
-app.get("/game/:gameid", (req, res) => {
+app.get("/game/:game_id", (req, res) => {
   //go into the game
+  var userId = req.session.id;
+  knex.select('host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
+    // res.json(results);
+    console.log(results[0].game_state);
+
+    const gameState = JSON.parse(results[0].game_state);
+    const hostId = results[0].host_id;
+    const guestId = results[0].guest_id;
+
+    let myHand = (userId === hostId) ? gameState.hands.host_hand : gameState.hands.guest_hand;
+
+    // game_state: {
+    //      board: {
+    //        prize: [],
+    //        host_card: [],
+    //        guest_card: []
+    //      },
+    //      hands: {
+    //        prize: ["1D", "2D", "3D", "4D", "5D", "6D", "7D", "8D", "9D", "10D", "11D", "12D", "13D"],
+    //        host_hand: ["1S", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "10S", "11S", "12S", "13S"],
+    //        guest_hand: ["1C", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "11C", "12C", "13C"]
+    //      }
+    //    }
+
+    let tableState = {
+      opponent_card_count: gameState.hands.guest_hand.length, // contain the number of cards that the opponent has
+      hand: myHand, // contain only the local players cards as an array
+      board: {
+        prize: gameState.board.prize,
+        host_card: gameState.board.host_card,
+        guest_card: gameState.board.guest_card
+      }
+    };
+    res.render("table", tableState);
+  });
+
+
 });
 
 app.post("/games", (req, res) => {
