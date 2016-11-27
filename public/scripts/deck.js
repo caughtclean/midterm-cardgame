@@ -142,6 +142,7 @@ $(function() {
     var game_url = window.location.pathname + "/state"
 
 
+
     $.ajax({
 
       url: game_url,

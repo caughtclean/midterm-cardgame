@@ -37,7 +37,6 @@ function processTurn(body){
   var gameState = game.game_state;
   var hostId = game.host_id;
   var guestId = game.guest_id;
-  var hostScore = game
 
   var user;
   var otherPlayer;
@@ -53,7 +52,7 @@ function processTurn(body){
     user = "guest";
     otherPlayer = hostId;
     var guestHand = gameState.hands.guest_hand;
-    guestHand.splice(guestHand.indexOf(body.card), 1); //remove card from host hand
+    guestHand.splice(guestHand.indexOf(body.card), 1); //remove card from guest hand
     gameState.board.guest_card = body.card;
 
   } else {
@@ -77,31 +76,42 @@ function processTurn(body){
       sumPrizes += Number(prize.slice(0, -1)); //total points to be won this round
     }
 
-    if (hostRank > guestRank){
-      //host wins, add score to host, end turn
-      knex("games").where("id", body.game_id).update({whose_turn: userId, game_state: gameState});
-
-    }
     if (hostRank === guestRank){
       //draw: update necessary stuff in the db (prize, turns, etc)
+
+      gameState.board.host_card = null;
+      gameState.board.guest_card = null;
+      gameState.board.prize.push(gameState.hands.prize.pop());
+
+      knex("games").where("id", body.game_id).update({whose_turn: userId, game_state: gameState});
+
+    } else {
+
+      // remove played cards from board, flip new prize, update game state
+      gameState.board.host_card = null;
+      gameState.board.guest_card = null;
+      gameState.board.prize = gameState.hands.prize.pop();
+
+      if (hostRank > guestRank){
+        //host wins, add score to host, end turn
+        knex("games").where("id", body.game_id).update({whose_turn: userId, game_state: gameState}).increment('host_score', sumPrizes);
+      } else {
+        //guest wins
+        knex("games").where("id", body.game_id).update({whose_turn: userId, game_state: gameState}).increment('guest_score', sumPrizes);
+      }
+
     }
+
 
 
 
   } else {
     //wait for other player to make turn
+    // TODO
+
     knex("games").where("id", body.game_id).update({whose_turn: otherPlayer, game_state: gameState});
     //render ???
   }
-
-
-  //body has game_id, user_id, card
-
-  //queries the database to see if other party played turn
-
-  //if both have played, compare to see who wins and add scores to running total
-
-    //if draw, pull another prize card, wait for players to select cards again
 
 
   // this is the gamestate in the database
@@ -123,12 +133,6 @@ function processTurn(body){
 
 
 
-function setBoard(){
-
-
- }
-
-
 // game_state: {
 //          board: {
 //            prize: [],
@@ -143,14 +147,7 @@ function setBoard(){
 //        }
 
 
-function loadTurn(){
 
-}
-
-function initializeGame(user_id){
-
-
-}
 
 
 
