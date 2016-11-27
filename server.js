@@ -162,6 +162,7 @@ app.post("/games", (req, res) => {
   //makes a new game by hosting a new room or joining an existing room awaiting a guest
 });
 
+var id;
 app.post("/", (req, res) => {
   console.log("posting to root");
   var user = req.session.id;
@@ -181,12 +182,16 @@ app.post("/", (req, res) => {
           host_hand: ["1S", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "10S", "11S", "12S", "13S"],
           guest_hand: ["1C", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "11C", "12C", "13C"]
         }
-      }
-    };
-      return knex.insert(newGame).into("games");
+        }
+      };
+      // knex('books').insert({title: 'Slaughterhouse Five'})
+       return knex('games').returning('id').insert(newGame).then(function(newgameid){
+        id = newgameid;
+       })
+      // return knex.insert(newGame).into("games");
     }
   }).then(() => {
-    res.redirect("/table")
+    res.redirect("/game/" + id)
   }).catch((error) => {
 
   });
