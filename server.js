@@ -53,26 +53,16 @@ app.get("/", (req, res) => {
     res.redirect("/login");
   } else {
 //assemble this users games
-    knex.select("type", "host_id", "guest_id", "whose_turn").from("games").where({host_id: currentUser}).orWhere({guest_id: currentUser}).then((results) => {
-      // results.forEach(function(game) {
-      //   console.log(game)
+    knex.select('type', 'host_id', 'host.name AS host_name', 'guest_id', 'guest.name AS guest_name', 'whose_turn')
+      .from("games")
+      .join("users AS host", "host.id", "games.host_id")
+      .join("users AS guest", "guest.id", "games.guest_id")
+      .where("host_id", currentUser)
+      .orWhere("guest_id", currentUser)
+    .then((results) => {
 //send users games to render
         console.log(results);
         res.render("index", {results});
-
-
-
-
-
-
-
-
-
-
-
-
-
-      // })
     })
   }
 });
