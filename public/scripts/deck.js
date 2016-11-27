@@ -7,6 +7,7 @@ gameState = {
 
 
 
+
 function cardElement(cardObj) {
   const rank = cardObj.rank;
   const suit = cardObj.suit.toLowerCase();
@@ -124,8 +125,15 @@ $(function() {
 
   function GetGame(url) {
 
+    var game_url = window.location.pathname + "/state"
+    console.log(game_url);
+
     $.ajax({
+<<<<<<< HEAD
       url: "/game/"+ url +"/state",
+=======
+      url: game_url,
+>>>>>>> 1c29a9740e39eee5abab02841ad83514c79edece
       method: "GET"}).done(
       function(data) {
         render(data);
