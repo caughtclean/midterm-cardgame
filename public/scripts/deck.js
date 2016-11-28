@@ -166,7 +166,6 @@ $(function() {
     }
 
 
-
     function refresh() {
       var game_url = window.location.pathname + "/state"
 
@@ -177,21 +176,40 @@ $(function() {
       method: "GET"}).done(
       function(data) {
         // debugger
-        if (data.board.host_card === "") {
+        if (data.board.host_card === player_card) {
           return
-        }else {
+        }
+        if (data.board.guest_card != 0) {
+          return
+        }
+
+        else {
+
+
+
 
 
           render(data)
+          setTimeout(dealOpponentCard, 50);
           setTimeout(dealCards, 100);
           setTimeout(dealOpponentCards, 900);
           setTimeout(dealPrize, 2250);
+
+          $(document).on('click', '.player .card', function() {
+          $(this).css('left', '405px');
+          $(this).css('top', '250px');
+          gameState.player_card = ($(this).data('cardid'))
+          setTimeout(dealOpponentCard, 50);
+          $('.opponent .card').last().slideUp()
+          $(document).off('click', '.player .card')
+        });
+
         }
       });
         console.log('refreshed');
 
 
-      setTimeout(refresh,5000);
+      setTimeout(refresh,8000);
 
       };
 
