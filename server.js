@@ -130,7 +130,15 @@ app.post("/game/:game_id", (req, res) => {
 });
 
 app.get("/game/:game_id", (req, res) => {
-  res.render('table')
+  knex.select('host_score', 'guest_score ').from('games').where('id', req.params.game_id).then((results) =>{
+  var scores = {
+    host_score:  results[0].host_score,
+    guest_score: results[0].guest_score
+  };
+
+  res.render('table', scores);
+
+  })
 });
 
 app.get("/game/:game_id/state", (req, res) => {
@@ -325,7 +333,7 @@ function processTurn(userid, gameid, card, cb){
 
         if (!nextPrize){
           //if next prize doesn't exist -- prize deck depleted
-          gameState.board.prize = null;
+          gameState.board.prize = 0;
           status = "inactive";
           result = "someone won";
         } else {
