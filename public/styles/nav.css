@@ -46,3 +46,8 @@
   color: black;
   background-color: #eee;
 }
+
+#nav-bar form {
+  float: right;
+}
+

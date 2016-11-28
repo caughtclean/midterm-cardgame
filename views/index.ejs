@@ -27,7 +27,7 @@
     <nav id="nav-bar">
       <img class="logo" src="/images/logo.png">
       <span class="header">Goofspiel</span>
-      <text class="compose">New Game <i class="fa fa-sign-in" a  ria-hidden="true"></i></text>
+      <!-- <text class="compose">New Game <i class="fa fa-sign-in" a  ria-hidden="true"></i></text> -->
       <form method='POST' action='/logout'>
         <label for='logout'></label>
         <input type='submit' value='logout'></input>
@@ -53,7 +53,8 @@
         <h1><%=game.type%></h1>
         <p>Host: <%=game.host_name%></p>
         <p>Guest: <%=game.guest_name%></p>
-        <p>It is <%=game.whose_turn%> turn</p>
+        <p>It is <%= game.whose_turn %> turn</p>
+        <a href="game/<%=game.id%>">Continue playing</a>
       </div>
     <% }) %>
     </section>

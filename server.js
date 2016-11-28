@@ -53,7 +53,7 @@ app.get("/", (req, res) => {
     res.redirect("/login");
   } else {
 //assemble this users games
-    knex.select('type', 'host_id', 'host.name AS host_name', 'guest_id', 'guest.name AS guest_name', 'whose_turn')
+    knex.select('games.id', 'type', 'host_id', 'host.name AS host_name', 'guest_id', 'guest.name AS guest_name', 'whose_turn')
       .from("games")
       .join("users AS host", "host.id", "games.host_id")
       .join("users AS guest", "guest.id", "games.guest_id")
@@ -61,6 +61,7 @@ app.get("/", (req, res) => {
       .orWhere("guest_id", currentUser)
     .then((results) => {
 //send users games to render
+
         console.log(results);
         res.render("index", {results});
 
@@ -265,12 +266,12 @@ function processTurn(userid, gameid, card, cb){
     var hostId = game[0].host_id;
     var guestId = game[0].guest_id;
 
+
     var otherPlayer;
 
     if (userid === hostId){
       otherPlayer = guestId;
       var hostHand = gameState.hands.host_hand;
-      debugger;
       hostHand.splice(hostHand.indexOf(card), 1); //remove card from host hand
       gameState.board.host_card = card;
 
@@ -314,7 +315,7 @@ function processTurn(userid, gameid, card, cb){
         // remove played cards from board, flip new prize, update game state
         gameState.board.host_card = null;
         gameState.board.guest_card = null;
-        debugger;
+
         gameState.board.prize = [];
         gameState.board.prize.push(gameState.hands.prize.pop());
         console.log("TURN ENDS: ", gameState);
