@@ -315,6 +315,8 @@ function processTurn(userid, gameid, card){
         gameState.board.host_card = null;
         gameState.board.guest_card = null;
         gameState.board.prize = gameState.hands.prize.pop();
+        debugger;
+        console.log("TURN ENDS: ", gameState);
 
         if (hostRank > guestRank){
           //host wins, add score to host, end turn
@@ -330,7 +332,7 @@ function processTurn(userid, gameid, card){
 
 
     } else {
-      console.log(game)
+      console.log("WAIT FOR OTHER PLAYER", gameState);
 
       //wait for other player to make turn
       knex("games").where("id", gameid).update({whose_turn: otherPlayer, game_state: gameState});
