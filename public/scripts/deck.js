@@ -106,7 +106,7 @@ function render(data) {
   $('.player').empty();
   $('.opponent').empty();
   $('.prize').empty();
-  $('.opponentCard').empty();
+  $('.opponentCard').empty().text('7S');
 
   function sendCard() {
     var game_url = window.location.pathname
@@ -131,7 +131,16 @@ function render(data) {
     $('opponentCard').slideUp()
     sendCard();
     $(document).off('click', '.player .card')
-    opponentCard(data.board.guest_card)
+    wait();
+    function wait() {
+      if (data.board.guest_card = 0) {
+        data.board.guest_card = '7S'
+        opponentCard;
+      }
+    }
+
+
+
 
 
   });
@@ -158,12 +167,48 @@ $(function() {
 
 
 
+    function refresh() {
+      var game_url = window.location.pathname + "/state"
+
+
+      $.ajax({
+
+      url: game_url,
+      method: "GET"}).done(
+      function(data) {
+        // debugger
+        if (data.board.host_card === "") {
+          return
+        }else {
+
+
+          render(data)
+          setTimeout(dealCards, 100);
+          setTimeout(dealOpponentCards, 900);
+          setTimeout(dealPrize, 2250);
+        }
+      });
+        console.log('refreshed');
+
+
+      setTimeout(refresh,5000);
+
+      };
+
+
+
+
+
+
+
 
 $(document).on('click', '.compose', function() {
     window.location.href='/';
 });
 
+
   GetGame();
+  refresh();
   setTimeout(dealCards, 100);
   setTimeout(dealOpponentCards, 900);
   setTimeout(dealPrize, 2250);
@@ -220,7 +265,7 @@ function dealOpponentCards() {
 function dealPrize() {
   $('.prize .card').each(function() {
 
-    var distFromLeft = $(this).data('rank') * ($(this).width() -82) + 550
+    var distFromLeft = $(this).data('rank') * ($(this).width() -78) + 550
     $(this).css('left', `${distFromLeft}px`);
   });
 
