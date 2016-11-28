@@ -116,6 +116,7 @@ function render(data) {
     type: 'POST',
     url: game_url,
     data: player_card,
+    processData: false,
     success: function() {
       console.log("sent!")
     }

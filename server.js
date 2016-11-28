@@ -118,8 +118,9 @@ app.post("/register", (req, res) => {
 app.post("/game/:game_id", (req, res) => {
   let userid = req.session.id;
   let gameid = req.params.game_id;
-  let card = req.body.data;
-  //require goofspiel logic.
+  let rawCard = Object.keys(req.body);
+  let card = rawCard[0];
+  //require goofspiel logic
 
   processTurn(userid, gameid, card);
 
@@ -306,8 +307,7 @@ function processTurn(userid, gameid, card){
         gameState.board.host_card = null;
         gameState.board.guest_card = null;
         gameState.board.prize.push(gameState.hands.prize.pop());
-
-        knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState});
+                knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState});
 
       } else {
 
@@ -330,6 +330,8 @@ function processTurn(userid, gameid, card){
 
 
     } else {
+      console.log(game)
+
       //wait for other player to make turn
       knex("games").where("id", gameid).update({whose_turn: otherPlayer, game_state: gameState});
     }
