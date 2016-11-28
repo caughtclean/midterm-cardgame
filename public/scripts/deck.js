@@ -132,7 +132,7 @@ function render(data) {
     sendCard();
     $(document).off('click', '.player .card')
     opponentCard(data.board.guest_card)
-    dealOpponentCards();
+
   });
 
 }
