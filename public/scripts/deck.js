@@ -128,10 +128,11 @@ function render(data) {
   prize(data.board.prize);
   $(document).on('click', '.player .card', function() {
     player_card = ($(this).data('cardid'))
-    opponentCard(data.board.guest_card)
     $('opponentCard').slideUp()
     sendCard();
     $(document).off('click', '.player .card')
+    opponentCard(data.board.guest_card)
+
   });
 
 }
