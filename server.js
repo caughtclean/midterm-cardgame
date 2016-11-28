@@ -53,7 +53,8 @@ app.get("/", (req, res) => {
     res.redirect("/login");
   } else {
 //assemble this users games
-    knex.select('games.id', 'type', 'host_id', 'host.name AS host_name', 'guest_id', 'guest.name AS guest_name', 'whose_turn')
+
+    knex.select('games.id', 'type', 'host_id', 'host.name AS host_name', 'guest_id', 'guest.name AS guest_name', 'whose_turn', 'status', 'result')
       .from("games")
       .join("users AS host", "host.id", "games.host_id")
       .join("users AS guest", "guest.id", "games.guest_id")
@@ -121,7 +122,6 @@ app.post("/game/:game_id", (req, res) => {
   let gameid = req.params.game_id;
   let rawCard = Object.keys(req.body);
   let card = rawCard[0];
-  //require goofspiel logic
 
 
   processTurn(userid, gameid, card, () =>{
@@ -136,37 +136,24 @@ app.get("/game/:game_id", (req, res) => {
 app.get("/game/:game_id/state", (req, res) => {
   //go into the game
 
-  // var userId = req.session.id;
-  // knex.select('id', 'host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
-
   var userId = req.session.id;
-  knex.select('id', 'host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
+  knex.select('id', 'host_id', 'guest_id', 'game_state', 'host_score', 'guest_score').from('games').where('id', req.params.game_id).then((results) => {
 
-    // res.json(results);
     console.log(results);
 
     const gameState = JSON.parse(results[0].game_state);
     const hostId = results[0].host_id;
     const guestId = results[0].guest_id;
     let myHand = (userId === hostId) ? gameState.hands.host_hand : gameState.hands.guest_hand;
-
-    // game_state: {
-    //      board: {
-    //        prize: [],
-    //        host_card: [],
-    //        guest_card: []
-    //      },
-    //      hands: {
-    //        prize: ["1D", "2D", "3D", "4D", "5D", "6D", "7D", "8D", "9D", "10D", "11D", "12D", "13D"],
-    //        host_hand: ["1S", "2S", "3S", "4S", "5S", "6S", "7S", "8S", "9S", "10S", "11S", "12S", "13S"],
-    //        guest_hand: ["1C", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "11C", "12C", "13C"]
-    //      }
-    //    }
+    const hostScore = results[0].host_score;
+    const guestScore = results[0].guest_score;
 
     let tableState = {
       game_id: results[0].id,
       opponent_card_count: gameState.hands.guest_hand.length, // contain the number of cards that the opponent has
       hand: myHand, // contain only the local players cards as an array
+      host_score: hostScore,
+      guest_score: guestScore,
       board: {
         prize: gameState.board.prize,
         host_card: gameState.board.host_card,
@@ -259,12 +246,15 @@ function shuffle(array) {
   return array;
 }
 
+
 function processTurn(userid, gameid, card, cb){
 
-  knex("games").select('host_id', 'guest_id', 'host_score', 'guest_score', 'game_state').where('id', gameid).then((game) => {
+  knex("games").select('id', 'host_id', 'guest_id', 'host_score', 'guest_score', 'game_state').where('id', gameid).then((game) => {
     var gameState = JSON.parse(game[0].game_state);
     var hostId = game[0].host_id;
     var guestId = game[0].guest_id;
+    var hostScore = game[0].host_score;
+    var guestScore = game[0].guest_score;
 
 
     var otherPlayer;
@@ -302,30 +292,59 @@ function processTurn(userid, gameid, card, cb){
         sumPrizes += Number(prize.slice(0, -1)); //total points to be won this round
       }
 
+      let nextPrize = gameState.hands.prize.pop();
+
       if (hostRank === guestRank){
         //draw: update necessary stuff in the db (prize, turns, etc)
 
         gameState.board.host_card = null;
         gameState.board.guest_card = null;
-        gameState.board.prize.push(gameState.hands.prize.pop());
-                return knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState});
+
+        if (!nextPrize){
+          gameState.board.prize = null; //if tied when there's no next prize, neither gets the prize
+        } else {
+          gameState.board.prize.push(nextPrize);
+        }
+
+        return knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState});
 
       } else {
 
         // remove played cards from board, flip new prize, update game state
         gameState.board.host_card = null;
         gameState.board.guest_card = null;
-
         gameState.board.prize = [];
-        gameState.board.prize.push(gameState.hands.prize.pop());
+
+        var status = "";
+        var result = "";
+
+
+        if (!nextPrize){
+          //if next prize doesn't exist -- prize deck depleted
+          gameState.board.prize = null;
+          status = "inactive";
+          result = "someone won";
+        } else {
+          gameState.board.prize.push(nextPrize);
+          status = "active";
+        }
+
         console.log("TURN ENDS: ", gameState);
 
         if (hostRank > guestRank){
-          //host wins, add score to host, end turn
-          return knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState, host_score: knex.raw('host_score + ' + sumPrizes)});
+          //host wins, add score to host, end
+
+          hostScore += sumPrizes;
+          result = "Bob (host) won " + hostScore;
+
+
+          return knex("games").where("id", gameid).update({whose_turn: userid, status: status, result: result, game_state: gameState, host_score: hostScore});
         } else {
           //guest wins
-          return knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState, guest_score: knex.raw('guest_score + ' + sumPrizes)});
+
+          guestScore += sumPrizes;
+          result = "Alice (guest) won with " + guestScore ;
+          return knex("games").where("id", gameid).update({whose_turn: userid, status: status, result: result, game_state: gameState, guest_score: guestScore});
         }
 
       }
