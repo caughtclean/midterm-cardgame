@@ -122,10 +122,10 @@ app.post("/game/:game_id", (req, res) => {
   let card = rawCard[0];
   //require goofspiel logic
 
-  processTurn(userid, gameid, card);
 
-
-  res.render('table')
+  processTurn(userid, gameid, card, () =>{
+    res.redirect("/game/" + gameid)
+  });
 });
 
 app.get("/game/:game_id", (req, res) => {
@@ -258,7 +258,7 @@ function shuffle(array) {
   return array;
 }
 
-function processTurn(userid, gameid, card){
+function processTurn(userid, gameid, card, cb){
 
   knex("games").select('host_id', 'guest_id', 'host_score', 'guest_score', 'game_state').where('id', gameid).then((game) => {
     var gameState = JSON.parse(game[0].game_state);
@@ -321,10 +321,10 @@ function processTurn(userid, gameid, card){
 
         if (hostRank > guestRank){
           //host wins, add score to host, end turn
-          return knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState}).increment('host_score', sumPrizes);
+          return knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState, host_score: knex.raw('host_score + ' + sumPrizes)});
         } else {
           //guest wins
-          return knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState}).increment('guest_score', sumPrizes);
+          return knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState, guest_score: knex.raw('guest_score + ' + sumPrizes)});
         }
 
       }
@@ -339,9 +339,7 @@ function processTurn(userid, gameid, card){
       return knex("games").where("id", gameid).update({whose_turn: otherPlayer, game_state: gameState});
     }
 
-  }).then(() => {
-    return;
-  });
+  }).then(cb);
 
 
 
