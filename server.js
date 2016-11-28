@@ -138,7 +138,7 @@ app.get("/game/:game_id/state", (req, res) => {
   // var userId = req.session.id;
   // knex.select('id', 'host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
 
-  var userId = 3;
+  var userId = req.session.id;
   knex.select('id', 'host_id', 'guest_id', 'game_state').from('games').where('id', req.params.game_id).then((results) => {
 
     // res.json(results);
@@ -265,16 +265,17 @@ function processTurn(userid, gameid, card){
     var hostId = game[0].host_id;
     var guestId = game[0].guest_id;
 
-    debugger
     var otherPlayer;
 
     if (userid === hostId){
       otherPlayer = guestId;
       var hostHand = gameState.hands.host_hand;
+      debugger;
       hostHand.splice(hostHand.indexOf(card), 1); //remove card from host hand
       gameState.board.host_card = card;
 
     } else if (userid === guestId){
+      debugger;
       otherPlayer = hostId;
       console.log(gameState.hands)
       var guestHand = gameState.hands.guest_hand;
@@ -289,7 +290,7 @@ function processTurn(userid, gameid, card){
     var guestCard = gameState.board.guest_card;
     var prizeArray = gameState.board.prize;
 
-    if (hostCard && guestCard){
+    if (hostCard.length > 0 && guestCard.length > 0){
       //both players have made their turns, do logic
 
       //find rank of both cards
@@ -307,7 +308,7 @@ function processTurn(userid, gameid, card){
         gameState.board.host_card = null;
         gameState.board.guest_card = null;
         gameState.board.prize.push(gameState.hands.prize.pop());
-                knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState});
+                return knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState});
 
       } else {
 
@@ -320,10 +321,10 @@ function processTurn(userid, gameid, card){
 
         if (hostRank > guestRank){
           //host wins, add score to host, end turn
-          knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState}).increment('host_score', sumPrizes);
+          return knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState}).increment('host_score', sumPrizes);
         } else {
           //guest wins
-          knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState}).increment('guest_score', sumPrizes);
+          return knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState}).increment('guest_score', sumPrizes);
         }
 
       }
@@ -335,9 +336,11 @@ function processTurn(userid, gameid, card){
       console.log("WAIT FOR OTHER PLAYER", gameState);
 
       //wait for other player to make turn
-      knex("games").where("id", gameid).update({whose_turn: otherPlayer, game_state: gameState});
+      return knex("games").where("id", gameid).update({whose_turn: otherPlayer, game_state: gameState});
     }
 
+  }).then(() => {
+    return;
   });
 
 
