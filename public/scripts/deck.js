@@ -133,6 +133,7 @@ function render(data) {
     $(document).off('click', '.player .card')
     opponentCard(data.board.guest_card)
 
+
   });
 
 }
@@ -158,8 +159,9 @@ $(function() {
 
 
 
-
-
+$(document).on('click', '.compose', function() {
+    window.location.href='/';
+});
 
   GetGame();
   setTimeout(dealCards, 100);
@@ -174,6 +176,7 @@ $(function() {
     $('.opponent .card').last().slideUp()
     $(document).off('click', '.player .card')
 
+
   });
 
 
@@ -182,7 +185,8 @@ $(function() {
 
 
 
-});
+
+
 
 
 
@@ -231,3 +235,5 @@ function dealOpponentCard() {
   });
 
 }
+
+});
