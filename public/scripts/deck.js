@@ -159,8 +159,9 @@ $(function() {
 
 
 
-
-
+$(document).on('click', '.compose', function() {
+    window.location.href='/';
+});
 
   GetGame();
   setTimeout(dealCards, 100);
@@ -175,7 +176,9 @@ $(function() {
     $('.opponent .card').last().slideUp()
     $(document).off('click', '.player .card')
 
+
   });
+
 
 
 
