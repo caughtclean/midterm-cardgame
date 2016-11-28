@@ -275,7 +275,6 @@ function processTurn(userid, gameid, card, cb){
       gameState.board.host_card = card;
 
     } else if (userid === guestId){
-      debugger;
       otherPlayer = hostId;
       console.log(gameState.hands)
       var guestHand = gameState.hands.guest_hand;
@@ -315,8 +314,9 @@ function processTurn(userid, gameid, card, cb){
         // remove played cards from board, flip new prize, update game state
         gameState.board.host_card = null;
         gameState.board.guest_card = null;
-        gameState.board.prize = gameState.hands.prize.pop();
         debugger;
+        gameState.board.prize = [];
+        gameState.board.prize.push(gameState.hands.prize.pop());
         console.log("TURN ENDS: ", gameState);
 
         if (hostRank > guestRank){
