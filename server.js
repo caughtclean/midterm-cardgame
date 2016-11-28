@@ -297,7 +297,7 @@ function processTurn(userid, gameid, card){
       var guestRank = guestCard.slice(0,-1);
 
       var sumPrizes = 0;
-      for (prize of prizeArray){
+      for (let prize of prizeArray){
         sumPrizes += Number(prize.slice(0, -1)); //total points to be won this round
       }
 

@@ -133,6 +133,7 @@ function render(data) {
     $(document).off('click', '.player .card')
     opponentCard(data.board.guest_card)
 
+
   });
 
 }
@@ -182,7 +183,7 @@ $(function() {
 
 
 
-});
+
 
 
 
@@ -231,3 +232,5 @@ function dealOpponentCard() {
   });
 
 }
+
+});
