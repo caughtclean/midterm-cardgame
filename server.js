@@ -297,22 +297,26 @@ function processTurn(userid, gameid, card, cb){
       if (hostRank === guestRank){
         //draw: update necessary stuff in the db (prize, turns, etc)
 
-        gameState.board.host_card = null;
-        gameState.board.guest_card = null;
+
+        gameState.board.host_card = 0;
+        gameState.board.guest_card = 0;
 
         if (!nextPrize){
-          gameState.board.prize = null; //if tied when there's no next prize, neither gets the prize
+          gameState.board.prize = 0; //if tied when there's no next prize, neither gets the prize
         } else {
           gameState.board.prize.push(nextPrize);
         }
 
         return knex("games").where("id", gameid).update({whose_turn: userid, game_state: gameState});
 
+
       } else {
 
         // remove played cards from board, flip new prize, update game state
-        gameState.board.host_card = null;
-        gameState.board.guest_card = null;
+
+        gameState.board.host_card = 0;
+        gameState.board.guest_card = 0;
+        debugger;
         gameState.board.prize = [];
 
         var status = "";
